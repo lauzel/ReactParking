@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import DistanceLabel from './components/DistanceLabel';
+import ParkingLotView from './components/ParkingLotView';
 
 export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <DistanceLabel originLat={45.7760072} originLng={4.8007158000000345} destLat={45.76052199999999} destLng={4.862372999999934}/>
+        <ParkingLotView maxLot={200} currentLot={170}/>
       </View>
     );
   }
