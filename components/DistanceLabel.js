@@ -20,7 +20,7 @@ export default class DistanceLabel extends React.Component {
             <View style={styles.container}>
                 {this.state.distance.length == 0 &&
                     <ActivityIndicator styleAttr="Small" />}
-                {this.state.distance.length >= 0 && <Text >{this.state.distance}</Text>}
+                {this.state.distance.length >= 0 && <Text style={styles.label}>{this.state.distance}</Text>}
             </View>
         );
     }
@@ -49,7 +49,6 @@ export default class DistanceLabel extends React.Component {
     }
 
     resultDistance(response) {
-        console.log(response.data.routes[0].legs[0].distance.text);
         this.setState({ distance: response.data.routes[0].legs[0].distance.text });
     }
 
@@ -69,6 +68,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    label: { 
+        marginLeft: 10,
+        fontSize: 20,
+        color: 'rgb(155,155,155)',
+    }
 });
 
 // Clé api distance API (google)

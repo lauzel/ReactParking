@@ -25,18 +25,15 @@ export default class ParkingLotView extends React.Component {
     }
 
     chooseColor() {
-        var percent = this.props.currentLot / this.props.maxLot;
+        var percent = 1 - (this.props.currentLot / this.props.maxLot);
         var color = "";
         if (percent > 0.85) {
-            color = "#D36B78";
-            //this.setState({ color: "#D36B78" });
+            color = "#D36B78"
         }
         else if (percent > 0.70) {
             color = "#F5C923";
-            // this.setState({ color: "#F5C923" });
         } else {
-            color = "#50E3C2"
-            // this.setState({ color: "#50E3C2" });
+            color = "#50E3C2";
         }
         return color;
     }

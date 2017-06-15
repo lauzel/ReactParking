@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { AppRegistry, ListView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import axios from 'axios';
+import ParkCell from './ParkCell';
 
 export default class ListComponent extends Component {
 
@@ -43,10 +44,10 @@ export default class ListComponent extends Component {
     }
 
     return (
-      <View style={{flex: 1, paddingTop: 20}}>
+      <View style={{flex: 1, paddingTop: 20, flexDirection: 'row'}}>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <Text>{rowData.properties.nom}, {rowData.releaseYear}</Text>}
+          renderRow={(rowData) => <ParkCell data={rowData} />}
         />
       </View>
     );
