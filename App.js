@@ -1,11 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-<<<<<<< HEAD
 import ListComponent from './components/ListComponent';
-=======
 import DistanceLabel from './components/DistanceLabel';
 import ParkingLotView from './components/ParkingLotView';
->>>>>>> f569a6cf0713fb406b2f909b73603f05a785c75a
+
 
 export default class App extends React.Component {
   render() {
