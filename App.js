@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import ListComponent from './components/ListComponent';
 import DistanceLabel from './components/DistanceLabel';
 import ParkingLotView from './components/ParkingLotView';
+import GoToMapBtn from './components/GoToMapBtn';
 
 
 export default class App extends React.Component {
@@ -10,8 +11,6 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <ListComponent/>
-//         <DistanceLabel originLat={45.7760072} originLng={4.8007158000000345} destLat={45.76052199999999} destLng={4.862372999999934}/>
-//         <ParkingLotView maxLot={200} currentLot={170}/>
       </View>
     );
   }
