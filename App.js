@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ListComponent from './components/ListComponent';
+import GoToMapBtn from './components/GoToMapBtn';
 
 export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-       <ListComponent/>
+        <ListComponent/>
       </View>
     );
   }
