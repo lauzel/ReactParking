@@ -17,10 +17,14 @@ export default class DataContainer extends React.Component {
       isLoading: true,
       markers: [],
       dataSource: [],
-      test: {
-        latitude:  45.750000,
-        longitude: 4.850000,
-      }
+      lastlocation: {
+        coords: {
+          longitude: 4.850000,
+          latitude: 45.750000
+        }
+      },
+      watchID: (null: ?number),
+      sortedDataSource: null
     }
 
     this.parkDidUpdate()
@@ -28,6 +32,30 @@ export default class DataContainer extends React.Component {
 
   componentDidMount() {
 
+    navigator.geolocation.getCurrentPosition(
+      (location) => {
+        this.setState({lastlocation: location}, () => {
+          this.sortedDataSource()
+        });
+      },
+      (error) => alert(error.message),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 30}
+    );
+    this.state.watchID = navigator.geolocation.watchPosition((location) => {
+      this.setState({lastlocation: location}, () => {
+        this.sortedDataSource()
+      });
+    });
+  }
+
+  componentWillUnmount() {
+     navigator.geolocation.clearWatch(this.state.watchID);
+  }
+
+  sortedDataSource() {
+    this.setState({
+      sortedDataSource: this.state.dataSource
+    })
   }
 
   parkDidUpdate() {
@@ -50,6 +78,26 @@ export default class DataContainer extends React.Component {
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  searchCallback(text) {
+
+    axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json',
+      {
+        params: {
+          query: '' + text,
+          key: APIKEY_PLACESEARCH,
+        }
+      }
+    ).then(this.parseSearchPlace.bind(this));
+  }
+
+  parseSearchPlace(results) {
+    console.log(results);
+    if (results.data.status == "OK") {
+      var loc = results.data.results[0].geometry.location;
+      console.log("Resultat :\n" + loc.lat + "\n" + loc.lng);
+    }
   }
 
   render() {
@@ -75,7 +123,7 @@ export default class DataContainer extends React.Component {
             />
           ))}
          </MapView>
-         <ListComponent isLoading={this.state.isLoading} dataSource={this.state.dataSource}/>
+         <ListComponent isLoading={this.state.isLoading} dataSource={this.state.dataSource} lastlocation={this.state.lastlocation}/>
       </View>
     );
   }

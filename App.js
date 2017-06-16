@@ -5,7 +5,9 @@ import DistanceLabel from './components/DistanceLabel';
 import ParkingLotView from './components/ParkingLotView';
 import MapView from 'react-native-maps';
 import DataContainer from './components/DataContainer';
-//import AnimatedViews from './components/AnimatedViews';
+
+const APIKEY_PLACESEARCH = 'AIzaSyA248lZdLZWTB0FGCcazOTGHVqc7vWOgOA';
+const APIKEY_DIRECTION_MATRIX = 'AIzaSyCIWibWCYwtL1Q0m-gwAyZK7qgXwjnymNk';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -29,6 +31,7 @@ export default class App extends React.Component {
       </View>
     );
   }
+
 }
 
 const styles = StyleSheet.create({

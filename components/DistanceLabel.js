@@ -20,7 +20,7 @@ export default class DistanceLabel extends React.Component {
             <View style={styles.container}>
                 {this.state.distance.length == 0 &&
                     <ActivityIndicator styleAttr="Small" />}
-                {this.state.distance.length >= 0 && <Text >{this.state.distance}</Text>}
+                {this.state.distance.length >= 0 && <Text style={styles.label}>{this.state.distance}</Text>}
             </View>
         );
     }
@@ -33,8 +33,6 @@ export default class DistanceLabel extends React.Component {
 
 
     computeDistance(originLat, originLng, destLat, destLng) {
-        var url = 'https://maps.googleapis.com/maps/api/directions/json';
-
         axios.get('https://maps.googleapis.com/maps/api/directions/json',
             {
                 params: {
@@ -44,13 +42,19 @@ export default class DistanceLabel extends React.Component {
                     mode: 'DRIVING'
                 }
             }
-        ).then(this.resultDistance.bind(this));
+        ).then(this.resultDistance.bind(this))
+        .catch(this.handleError.bind(this));
 
     }
 
     resultDistance(response) {
-        console.log(response.data.routes[0].legs[0].distance.text);
         this.setState({ distance: response.data.routes[0].legs[0].distance.text });
+    }
+
+    handleError(error) {
+        console.log(error)
+        this.setState({ distance: "_" });
+
     }
 
 }
@@ -69,6 +73,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    label: { 
+        marginLeft: 10,
+        fontSize: 20,
+        color: 'rgb(155,155,155)',
+    }
 });
 
 // Clé api distance API (google)
