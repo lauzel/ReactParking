@@ -3,15 +3,29 @@ import { StyleSheet, Text, View } from 'react-native';
 import ListComponent from './components/ListComponent';
 import DistanceLabel from './components/DistanceLabel';
 import ParkingLotView from './components/ParkingLotView';
-
+import MapView from 'react-native-maps';
+import DataContainer from './components/DataContainer';
+//import AnimatedViews from './components/AnimatedViews';
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+       initialRegion : {
+         latitude: 37.78825,
+         longitude: -122.4324,
+         latitudeDelta: 0.0922,
+         longitudeDelta: 0.0421,
+       }
+    };
+
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <ListComponent/>
-//         <DistanceLabel originLat={45.7760072} originLng={4.8007158000000345} destLat={45.76052199999999} destLng={4.862372999999934}/>
-//         <ParkingLotView maxLot={200} currentLot={170}/>
+         <DataContainer />
       </View>
     );
   }
@@ -19,9 +33,7 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+   flex: 1,
+   flexDirection: 'column'
+ }
 });
