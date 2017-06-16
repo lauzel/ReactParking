@@ -33,8 +33,6 @@ export default class DistanceLabel extends React.Component {
 
 
     computeDistance(originLat, originLng, destLat, destLng) {
-        var url = 'https://maps.googleapis.com/maps/api/directions/json';
-
         axios.get('https://maps.googleapis.com/maps/api/directions/json',
             {
                 params: {

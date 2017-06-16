@@ -41,7 +41,7 @@ export default class SearchBar extends React.Component {
 
     onSubmitSearch(text) {
        console.log(this.state.myText);
-       this.props.callback();
+       this.props.callback(text);
     }
 
     handleSearchChange(e) {        
