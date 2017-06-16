@@ -8,9 +8,33 @@ export default class ListComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true
+      isLoading: true,
+      lastlocation: null,
+      watchID: (null: ?number),
+      sortedDataSource: null
     }
     this.parkDidUpdate()
+  }
+
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      (location) => {
+        this.setState({lastlocation: location}, () => {
+          this.sortedDataSource()
+        });
+      },
+      (error) => alert(error.message),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 30}
+    );
+    this.state.watchID = navigator.geolocation.watchPosition((location) => {
+      this.setState({lastlocation: location}, () => {
+        this.sortedDataSource()
+      });
+    });
+  }
+
+  componentWillUnmount() {
+     navigator.geolocation.clearWatch(this.state.watchID);
   }
 
   parkDidUpdate() {
@@ -25,13 +49,21 @@ export default class ListComponent extends Component {
         this.setState({
           isLoading: false,
           dataSource: ds.cloneWithRows(responseData.features),
-        }, function() {
-          // do something with new state
+        }, () => {
+          this.sortedDataSource()
         });
       })
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  sortedDataSource() {
+    console.log(this.state.lastlocation.coords.latitude)
+    console.log(this.state.lastlocation.coords.longitude)
+    this.setState({
+      sortedDataSource: this.state.dataSource
+    })
   }
 
   render() {
@@ -47,7 +79,7 @@ export default class ListComponent extends Component {
       <View style={{flex: 1, paddingTop: 20, flexDirection: 'row'}}>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <ParkCell data={rowData} />}
+          renderRow={(rowData) => <ParkCell data={rowData} location={this.state.lastlocation}/>}
         />
       </View>
     );
