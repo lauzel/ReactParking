@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text,TouchableHighlight, TouchableNativeFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import DistanceLabel from './DistanceLabel';
 import ParkingLotView from './ParkingLotView';
@@ -12,19 +12,25 @@ export default ParkCell = (props) => {
 	var s = props.data.properties.etat
 	var i = s.indexOf(' ')
 	var currentLot = parseInt([s.slice(0,i), s.slice(i+1)][0], 10)
+	let originCoords = {
+		latitude: destLat,
+		longitude: destLng
+	}
 	if (isNaN(currentLot)) {
 		currentLot = 0
 	}
 	let maxLot = parseInt(props.data.properties.capacitevoiture)
     return (
-      <View style={styles.cell}>
-     	<ParkingLotView maxLot={maxLot} currentLot={currentLot}/>
-     	<Text style={styles.name}>{name}</Text>
-     	<View style={styles.flexDirection}>
-      		<DistanceLabel originLat={props.location.coords.latitude} originLng={props.location.coords.longitude} destLat={destLat} destLng={destLng}/>
-      		<GoToMapBtn  destLat={destLat} destLng={destLng}/>
+			<TouchableNativeFeedback onPress={e => props.handleClick(e, originCoords)}>
+				<View style={styles.cell}>
+					<ParkingLotView maxLot={maxLot} currentLot={currentLot}/>
+					<Text style={styles.name}>{name}</Text>
+						<View style={styles.flexDirection}>
+							<DistanceLabel originLat={props.location.coords.latitude} originLng={props.location.coords.longitude} destLat={destLat} destLng={destLng}/>
+							<GoToMapBtn  destLat={destLat} destLng={destLng}/>
+						</View>
       	</View>
-      </View>
+			</TouchableNativeFeedback>
     );
 }
 

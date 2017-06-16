@@ -26,7 +26,6 @@ export default class DistanceLabel extends React.Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount');
         this.computeDistance(this.props.originLat, this.props.originLng, this.props.destLat, this.props.destLng);
 
     }
@@ -52,7 +51,6 @@ export default class DistanceLabel extends React.Component {
     }
 
     handleError(error) {
-        console.log(error)
         this.setState({ distance: "_" });
 
     }
@@ -73,7 +71,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    label: { 
+    label: {
         marginLeft: 10,
         fontSize: 20,
         color: 'rgb(155,155,155)',

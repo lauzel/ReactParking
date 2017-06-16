@@ -1,12 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, View, ListView } from 'react-native';
+import { StyleSheet, Text, View, ListView, Animated , PanResponder} from 'react-native';
 import ListComponent from './ListComponent';
 import MapView from 'react-native-maps';
 import axios from 'axios';
-let id = 0;
+import SearchBar from './SearchBar';
+import redImage from '../img/red.png';
+import greenImage from '../img/green.png';
+import yellowImage from '../img/yellow.png';
 
-function randomColor() {
-  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+const APIKEY_PLACESEARCH = 'AIzaSyA248lZdLZWTB0FGCcazOTGHVqc7vWOgOA';
+const APIKEY_DIRECTION_MATRIX = 'AIzaSyCIWibWCYwtL1Q0m-gwAyZK7qgXwjnymNk';
+
+function getRegion(lat, lng) {
+  return {
+    latitude:  lat,
+    longitude: lng,
+    latitudeDelta: 0.0122,
+    longitudeDelta: 0.0121,
+  };
 }
 
 export default class DataContainer extends React.Component {
@@ -24,7 +35,7 @@ export default class DataContainer extends React.Component {
         }
       },
       watchID: (null: ?number),
-      sortedDataSource: null
+      sortedDataSource: null,
     }
 
     this.parkDidUpdate()
@@ -38,7 +49,7 @@ export default class DataContainer extends React.Component {
           this.sortedDataSource()
         });
       },
-      (error) => alert(error.message),
+      (error) => console.log(error),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 30}
     );
     this.state.watchID = navigator.geolocation.watchPosition((location) => {
@@ -66,7 +77,6 @@ export default class DataContainer extends React.Component {
       .then((response) => response.data)
       .then((responseData) => {
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        console.log(responseData.features);
         this.setState({
           isLoading: false,
           dataSource: ds.cloneWithRows(responseData.features),
@@ -93,23 +103,58 @@ export default class DataContainer extends React.Component {
   }
 
   parseSearchPlace(results) {
-    console.log(results);
     if (results.data.status == "OK") {
-      var loc = results.data.results[0].geometry.location;
-      console.log("Resultat :\n" + loc.lat + "\n" + loc.lng);
+      this.setState({
+        region: getRegion(results.data.results[0].geometry.location.lat, results.data.results[0].geometry.location.lng )
+      });
     }
+  }
+
+  handleCoords(coords) {
+    this.setState({
+      region: getRegion(coords.latitude, coords.longitude)
+    });
+
+  }
+
+  getImageForMarker(marker) {
+    let cMax = parseInt(marker.properties.capacitevoiture);
+    let s = marker.properties.etat;
+  	let i = s.indexOf(' ')
+  	let currentLot = parseInt([s.slice(0,i), s.slice(i+1)][0], 10)
+
+    if (isNaN(currentLot)) {
+  		currentLot = 0
+  	}
+
+    let perc = currentLot/cMax;
+    var percent = 1 - perc;
+
+
+
+    if(percent > 0.85) {
+      return redImage;
+    } else if (perc > 0.70) {
+      return yellowImage;
+    } else {
+      return greenImage;
+    }
+
+    return greenImage;
   }
 
   render() {
     return (
-      <View style={styles.container}>
-         <MapView
+      <View style={styles.container}  >
+       <SearchBar style={styles.searchBar}  callback={(text) => this.searchCallback(text)} />
+         <MapView.Animated
            initialRegion={{
-             latitude:  45.750000,
-             longitude: 4.850000,
+             latitude:  this.state.lastlocation.coords.latitude,
+             longitude: this.state.lastlocation.coords.longitude,
              latitudeDelta: 0.0922,
              longitudeDelta: 0.0421,
            }}
+            region={this.state.region}
             onPress={(e) => this.onMapPress(e)}
             style={styles.map}
          >
@@ -119,11 +164,12 @@ export default class DataContainer extends React.Component {
               key={marker.properties.nom}
               title={marker.properties.nom}
               description={marker.properties.etat}
+              image={this.getImageForMarker(marker)}
 
             />
           ))}
-         </MapView>
-         <ListComponent isLoading={this.state.isLoading} dataSource={this.state.dataSource} lastlocation={this.state.lastlocation}/>
+         </MapView.Animated>
+         <ListComponent isLoading={this.state.isLoading} dataSource={this.state.dataSource} lastlocation={this.state.lastlocation} handleClick={c => this.handleCoords(c)}/>
       </View>
     );
   }
@@ -135,7 +181,12 @@ const styles = StyleSheet.create({
    flexDirection: 'column'
  },
  map: {
-   height: 400,
+   height: 300,
    width: 400,
  },
+ searchBar: {
+   position: 'absolute',
+   top: 5,
+   right: 5,
+ }
 });
