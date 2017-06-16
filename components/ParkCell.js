@@ -3,6 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import DistanceLabel from './DistanceLabel';
 import ParkingLotView from './ParkingLotView';
+import GoToMapBtn from './GoToMapBtn';
 
 export default ParkCell = (props) => {
 	let destLng = props.data.geometry.coordinates[0]
@@ -16,12 +17,15 @@ export default ParkCell = (props) => {
 	}
 	let maxLot = parseInt(props.data.properties.capacitevoiture)
 
-	console.log(currentLot)
+	console.log(props.location.coords)
     return (
       <View style={styles.cell}>
      	<ParkingLotView maxLot={maxLot} currentLot={currentLot}/>
      	<Text style={styles.name}>{name}</Text>
-      	<DistanceLabel originLat={45.7760072} originLng={4.8007158000000345} destLat={destLat} destLng={destLng}/>
+     	<View style={styles.flexDirection}>
+      		<DistanceLabel originLat={props.location.coords.latitude} originLng={props.location.coords.longitude} destLat={destLat} destLng={destLng}/>
+      		<GoToMapBtn  destLat={destLat} destLng={destLng}/>
+      	</View>
       </View>
     );
 }
@@ -39,4 +43,8 @@ const styles = StyleSheet.create({
         color: 'rgb(155,155,155)',
         maxHeight: 100
     },
+    rightView: {
+    	flex: 1,
+    	flexDirection: 'column'
+    }
 });

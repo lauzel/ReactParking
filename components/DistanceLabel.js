@@ -42,12 +42,19 @@ export default class DistanceLabel extends React.Component {
                     mode: 'DRIVING'
                 }
             }
-        ).then(this.resultDistance.bind(this));
+        ).then(this.resultDistance.bind(this))
+        .catch(this.handleError.bind(this));
 
     }
 
     resultDistance(response) {
         this.setState({ distance: response.data.routes[0].legs[0].distance.text });
+    }
+
+    handleError(error) {
+        console.log(error)
+        this.setState({ distance: "_" });
+
     }
 
 }
